@@ -1,0 +1,210 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/emscripten.cpp.o",
+      "src/backend/emscripten.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/backend/emscripten.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/emscripten.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/linux.cpp.o",
+      "src/backend/linux.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/backend/linux.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/linux.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/windows.cpp.o",
+      "src/backend/windows.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/backend/windows.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/windows.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/movaBackend.cpp.o",
+      "src/movaBackend.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/movaBackend.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/movaBackend.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/movaGUI.cpp.o",
+      "src/movaGUI.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/movaGUI.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/movaGUI.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Isrc/",
+      "-std=c++17",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/movaImage.cpp.o",
+      "src/movaImage.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/libraries/Mova",
+    "file": "/mnt/D/Dev/C++/libraries/Mova/src/movaImage.cpp",
+    "output": "/mnt/D/Dev/C++/libraries/Mova/build/movaImage.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I.",
+      "-I/mnt/D/Dev/C++/libraries/Mova/src/",
+      "-std=c++17",
+      "-Ofast",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/builtin.cpp.o",
+      "src/builtin.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/Tools/OreMaper",
+    "file": "/mnt/D/Dev/C++/Tools/OreMaper/src/builtin.cpp",
+    "output": "/mnt/D/Dev/C++/Tools/OreMaper/build/builtin.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I.",
+      "-I/mnt/D/Dev/C++/libraries/Mova/src/",
+      "-std=c++17",
+      "-Ofast",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/main.cpp.o",
+      "src/main.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/Tools/OreMaper",
+    "file": "/mnt/D/Dev/C++/Tools/OreMaper/src/main.cpp",
+    "output": "/mnt/D/Dev/C++/Tools/OreMaper/build/main.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I.",
+      "-I/mnt/D/Dev/C++/libraries/Mova/src/",
+      "-std=c++17",
+      "-Ofast",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/mapper.cpp.o",
+      "src/mapper.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/Tools/OreMaper",
+    "file": "/mnt/D/Dev/C++/Tools/OreMaper/src/mapper.cpp",
+    "output": "/mnt/D/Dev/C++/Tools/OreMaper/build/mapper.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I.",
+      "-I/mnt/D/Dev/C++/libraries/Mova/src/",
+      "-std=c++17",
+      "-Ofast",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/ui.cpp.o",
+      "src/ui.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/Tools/OreMaper",
+    "file": "/mnt/D/Dev/C++/Tools/OreMaper/src/ui.cpp",
+    "output": "/mnt/D/Dev/C++/Tools/OreMaper/build/ui.cpp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-I.",
+      "-I/mnt/D/Dev/C++/libraries/Mova/src/",
+      "-std=c++17",
+      "-Ofast",
+      "-w",
+      "-DDEBUG",
+      "-fsanitize=address",
+      "-g3",
+      "-o",
+      "build/utils.cpp.o",
+      "src/utils.cpp"
+    ],
+    "directory": "/mnt/D/Dev/C++/Tools/OreMaper",
+    "file": "/mnt/D/Dev/C++/Tools/OreMaper/src/utils.cpp",
+    "output": "/mnt/D/Dev/C++/Tools/OreMaper/build/utils.cpp.o"
+  }
+]

@@ -1,0 +1,11 @@
+library "Mova";
+flags "-std=c++17 -Ofast";
+
+[Debug]:
+flags "-w -DDEBUG -fsanitize=address -g3";
+
+[Linux]:
+output "./bin/OreMapper";
+
+[Windows]:
+output "bin\OreMapper.exe";
