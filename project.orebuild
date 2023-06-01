@@ -8,4 +8,5 @@ flags "-w -DDEBUG -fsanitize=address -g3";
 output "./bin/OreMapper";
 
 [Windows]:
+linkerFlags "-static";
 output "bin\OreMapper.exe";

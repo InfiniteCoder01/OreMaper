@@ -27,11 +27,19 @@ template <typename T> static void fwrite(FILE* file, const T& value) { fwrite(&v
 #pragma endregion File
 #pragma region Atlas
 struct Atlas {
+  std::filesystem::path path;
+
   Atlas() = default;
   Atlas(const std::filesystem::path& path) : texture(path), path(path) {
     this->path.replace_extension(".atl");
+    if (!std::filesystem::exists(this->path)) {
+      tileSize = texture.size();
+      return;
+    }
     FILE* file = fopen(this->path.string().c_str(), "rb");
     fread(&tileSize, sizeof(tileSize), 1, file);
+    if (tileSize.x > texture.width()) tileSize.x = texture.width();
+    if (tileSize.y > texture.height()) tileSize.y = texture.height();
     fclose(file);
   }
 
@@ -45,9 +53,6 @@ struct Atlas {
   vec2u tileSize;
 
   MvImage& operator()() { return texture; }
-
-private:
-  std::filesystem::path path;
 };
 
 namespace Editor::AtlasView {
@@ -61,7 +66,7 @@ inline void open(std::filesystem::path path) {
   atlas = path;
 }
 
-std::string exportAtlases();
+void exportAtlases(FILE* file);
 } // namespace Editor::AtlasView
 #pragma endregion Atlas
 #pragma region Component
@@ -94,7 +99,7 @@ struct Component {
 
   ~Component() {
     if (path.string().substr(0, 8) == "builtin/") return;
-    FILE* file = fopen(this->path.string().c_str(), "wb");
+    FILE* file = fopen(path.string().c_str(), "wb");
     fwrite<uint32_t>(file, properties.size());
     for (auto& property : properties) {
       fwritestr(file, property.name);
@@ -107,9 +112,12 @@ struct Component {
 struct IComponent {
   std::filesystem::path path;
   std::vector<std::string> properties;
+  std::vector<std::string> propertyNames;
 
   IComponent() = default;
   IComponent(std::filesystem::path path, std::vector<std::string> properties = {});
+
+  bool checkDependencies();
 };
 
 struct Object {
@@ -124,17 +132,18 @@ struct Object {
 #pragma region Map
 struct Map {
   vec2u size;
+  std::filesystem::path path;
 
   Map() = default;
   Map(std::filesystem::path path);
-  Map(uint32_t width, uint32_t height, std::filesystem::path atlas, std::filesystem::path path) : size(width, height), atlas(std::move(atlas)), m_Path(std::move(path)), m_Data(width * height, -1) {}
+  Map(uint32_t width, uint32_t height, std::filesystem::path atlas, std::filesystem::path path) : size(width, height), atlas(std::move(atlas)), path(std::move(path)), m_Data(width * height, -1) {}
   ~Map();
 
   Atlas& getAtlas() const;
 
   vec2i operator()(vec2u position) { return operator()(position.x, position.y); }
   vec2i operator()(uint32_t x, uint32_t y) {
-    if (x > size.x || y > size.y) return {-1};
+    if (x >= size.x || y >= size.y) return {-1};
     return m_Data[x + y * size.x];
   }
 
@@ -144,12 +153,24 @@ struct Map {
     m_Data[x + y * size.x] = tile;
   }
 
+  void setSize(uint32_t width, uint32_t height) {
+    if (width == size.x && height == size.y) return;
+
+    std::vector<vec2i> data(width * height, -1);
+    for (uint32_t y = 0; y < Math::min(height, size.y); y++) {
+      for (uint32_t x = 0; x < Math::min(width, size.x); x++) {
+        data[x + (height - y - 1) * width] = m_Data[x + (size.y - y - 1) * size.x];
+      }
+    }
+    m_Data.swap(data);
+    size = vec2u(width, height);
+  }
+
   std::vector<Object> objects;
   std::filesystem::path atlas;
 
 private:
-  std::vector<vec2u> m_Data;
-  std::filesystem::path m_Path;
+  std::vector<vec2i> m_Data;
 };
 
 namespace Editor::Mapper {
@@ -164,7 +185,7 @@ inline void open(std::filesystem::path path) {
   map = path;
 }
 
-std::string exportMaps();
+void exportMaps(FILE* file);
 } // namespace Editor::Mapper
 #pragma endregion Map
 #pragma region Views
@@ -222,9 +243,9 @@ struct Project {
 
   void closeComponent(const std::filesystem::path& path) { componentCache.erase(path); }
 
-  std::string exportAll() {
-    std::string result = "const uint8_t PROGMEM data[] = {\n  ";
-    result += Editor::AtlasView::exportAtlases();
+  std::string exportAll(std::filesystem::path path) {
+    FILE* file = fopen(path.string().c_str(), "wb+");
+    Editor::AtlasView::exportAtlases(file);
 
     {
       componentIndex.clear();
@@ -237,10 +258,8 @@ struct Project {
       }
     }
 
-    result += Editor::Mapper::exportMaps();
-    for (uint8_t i = 0; i < 4; i++) result.pop_back();
-    result += "\n};\n";
-    return result;
+    Editor::Mapper::exportMaps(file);
+    fclose(file);
   }
 
   std::map<std::filesystem::path, uint32_t> mapIndex;

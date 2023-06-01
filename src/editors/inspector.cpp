@@ -19,9 +19,13 @@ static void propertyValueInput(MvGuiTextInputState& state, std::string& value, P
   if (type == PropertyType::Int) MvGui::TextInput(value, state, MvGuiTextInputType::Integer);
   else if (type == PropertyType::String) MvGui::TextInput(value, state, MvGuiTextInputType::Multiline);
   else if (type == PropertyType::Map) {
+    MvGui::TextUnformatted(value);
+    MvGui::sameLine();
     if (&value == map) MvGui::TextUnformatted("choosing...");
     else if (MvGui::Button("Choose")) map = &value;
   } else if (type == PropertyType::Atlas) {
+    MvGui::TextUnformatted(value);
+    MvGui::sameLine();
     if (&value == atlas) MvGui::TextUnformatted("choosing...");
     else if (MvGui::Button("Choose")) atlas = &value;
   }
@@ -41,20 +45,29 @@ void window() {
       MvGui::TextInput(property.name, states[i]);
       MvGui::sameLine();
       if (MvGui::Button(types[(uint32_t)property.type])) property.type = (PropertyType)(((uint32_t)property.type + 1) % (uint32_t)PropertyType::TypeCount);
+      MvGui::sameLine();
+      if (MvGui::Button("-")) project.component(component).properties.erase(project.component(component).properties.begin() + i--);
     }
 
+    if (MvGui::Button("+")) project.component(component).properties.emplace_back();
     return MvGui::End();
   }
 
   // * Object
   if (Mapper::currentObject != nullptr) {
-    const vec2f position = Mapper::currentObject->position / vec2f(Mapper::currentMap().getAtlas().tileSize);
+    const vec2f position = vec2f(Mapper::currentObject->position) / Mapper::currentMap().getAtlas().tileSize;
     MvGui::Text("Object at (%0.1f, %0.1f)", position.x, position.y);
     MvGui::Separator();
 
     {
       uint32_t propertyCount = 0;
-      for (const auto& component : Mapper::currentObject->components) propertyCount += component.properties.size();
+      for (uint32_t i = 0; i < Mapper::currentObject->components.size(); i++) {
+        if (!Mapper::currentObject->components[i].checkDependencies()) {
+          Mapper::currentObject->components.erase(Mapper::currentObject->components.begin() + i--);
+          continue;
+        }
+        propertyCount += Mapper::currentObject->components[i].properties.size();
+      }
       states.resize(propertyCount);
     }
 
@@ -76,7 +89,10 @@ void window() {
       }
 
       // * Delete
-      if (MvGui::Button(ICON_FA_DELETE_LEFT)) Mapper::currentObject->components.erase(Mapper::currentObject->components.begin() + i--);
+      if (MvGui::Button(ICON_FA_DELETE_LEFT)) {
+        Mapper::currentObject->components.erase(Mapper::currentObject->components.begin() + i--);
+        continue;
+      }
 
       // * Properties
       auto parent = project.component(Mapper::currentObject->components[i].path);
@@ -91,7 +107,7 @@ void window() {
     {
       if (!addingComponent && MvGui::Button("Add Component")) addingComponent = true;
       if (addingComponent && !component.empty()) {
-        Mapper::currentMap().objects.rbegin()->components.emplace_back(component);
+        Mapper::currentObject->components.emplace_back(component);
         addingComponent = false;
         component = "";
       }
@@ -106,6 +122,30 @@ void window() {
       Mapper::currentObject = nullptr;
     }
 
+    return MvGui::End();
+  }
+
+  // * Map
+  if (!Mapper::map.empty()) {
+    MvGui::TextUnformatted(Mapper::map.string());
+    {
+      static MvGuiTextInputState widthState, heightState;
+      static std::string width, height;
+
+      if (widthState.cursor == UINT32_MAX) width = std::to_string(Mapper::currentMap().size.x);
+      if (heightState.cursor == UINT32_MAX) height = std::to_string(Mapper::currentMap().size.y);
+
+      MvGui::TextUnformatted("Wdith: ");
+      MvGui::sameLine();
+      MvGui::TextInput(width, widthState, MvGuiTextInputType::Integer);
+
+      MvGui::TextUnformatted("Height: ");
+      MvGui::sameLine();
+      MvGui::TextInput(height, heightState, MvGuiTextInputType::Integer);
+
+      if (widthState.cursor == UINT32_MAX) Mapper::currentMap().setSize(Math::clamp(std::stoi(width), 1, 65535), Mapper::currentMap().size.y);
+      if (heightState.cursor == UINT32_MAX) Mapper::currentMap().setSize(Mapper::currentMap().size.x, Math::clamp(std::stoi(height), 1, 65535));
+    }
     return MvGui::End();
   }
 
